@@ -3,8 +3,6 @@ import numpy as np
 
 #Pipelines data preprocessing
 
-df = pd.DataFrame("dataset_1.csv", index_col = 0)
-
 def remove_negative_values(df, column):
     df[column] = df[column].apply(lambda x: np.nan if x < 0 else x)
     return df
@@ -17,7 +15,7 @@ def remove_outliers_with_zscore(df, column, threshold = 2):
     return df    
 
 def map_column_values(df, column, mapping_dict):
-    df[column] = df[column].apply( lambda value : mapping_dict.get(value.lower().strip(), np.nan) if value is not np.nan else np.nan)
+    df[column] = df[column].apply( lambda value : mapping_dict.get(value, value))
     return df
 
 def fill_na_in_column(df, column, fill_value):
@@ -39,5 +37,10 @@ def preprocess_data(df):
     }
     
     return (
-        df.pipe(remove_negative_values, "Edad").pipe(remove_negative_values, "Igresos").pipe(remove_negative_values, "Hijos").pipe(remove_outliers_with_zscore, "Ingresos").pipe(remove_outliers_with_zscore, "Edad").pipe(remove_outliers_with_zscore, "Hijos").pipe(remove_outliers_with_zscore, "Altura").pipe(map_column_values, "Nivel_Educación", education_mapping).pipe(map_column_values, "Género", gender_mapping).pipe(fill_na_in_column, "Ciudad", "Desconocido").pipe(fill_na_in_column,  "Nivel_Educación", "Desconocido").pipe(fill_na_in_column, "Género", "Desconocido").pipe(fill_na_in_column, "Edad", df["Edad"].median()).pipe(fill_na_in_column, "Ingresos", df["Ingresos"].median()).pipe(fill_na_in_column, "Hijos", df["Hijos"].median()).pipe(fill_na_in_column, "Altura", df["Altura".median()])
+        df.pipe(remove_negative_values, "Edad").pipe(remove_negative_values, "Ingresos").pipe(remove_negative_values, "Hijos").pipe(remove_outliers_with_zscore, "Ingresos").pipe(remove_outliers_with_zscore, "Edad").pipe(remove_outliers_with_zscore, "Hijos").pipe(remove_outliers_with_zscore, "Altura").pipe(map_column_values, "Nivel_Educación", education_mapping).pipe(map_column_values, "Género", gender_mapping).pipe(fill_na_in_column, "Ciudad", "Desconocido").pipe(fill_na_in_column,  "Nivel_Educación", "Desconocido").pipe(fill_na_in_column, "Género", "Desconocido").pipe(fill_na_in_column, "Edad", df["Edad"].median()).pipe(fill_na_in_column, "Ingresos", df["Ingresos"].median()).pipe(fill_na_in_column, "Hijos", df["Hijos"].median()).pipe(fill_na_in_column, "Altura", df["Altura"].median())
     )
+    
+    
+df = pd.read_csv("dataset_1.csv", index_col = 0)
+df = preprocess_data(df)
+print(df)    
