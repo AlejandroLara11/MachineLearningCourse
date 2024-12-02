@@ -43,4 +43,4 @@ def preprocess_data(df):
     
 df = pd.read_csv("dataset_1.csv", index_col = 0)
 df = preprocess_data(df)
-print(df)    
+print(df)
